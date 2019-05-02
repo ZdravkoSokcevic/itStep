@@ -27,7 +27,7 @@ class CreateArrivalsTable extends Migration
             ]);
             $table->string('description');
         });
-        Shema::table('arrivals',function($table){
+        Schema::table('arrivals',function($table){
             $table->foreign('worker_id')->references('id')->on('workers');
             $table->foreign('calendar_id')->references('id')->on('calendars');
         });

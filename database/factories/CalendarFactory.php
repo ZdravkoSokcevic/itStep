@@ -8,19 +8,32 @@ use App\Calendar;
 
 $factory->define(App\Calendar::class, function (Faker $faker) {
     // $date=$faker->dateTime;
-    $dat=Calendar::all()->get('date');
-    var_dump($dat);
-    die();
-    $dates[]=Calendar::all()->get('date')|null;
-    do{
+    $dates=DB::table('calendars')->pluck('days');
+    
+    if(isset($dates))
+    {
+        do{
+            $date=$faker->date;
+            foreach($dates as $singleDate)
+            {
+                $dat1=explode(' ',$singleDate);
+                $dat2=explode(' ',$date);
+               if($dat1===$dat2)
+               {
+                   $exists=false;
+               }else{
+                   $exists=true;
+               }
+            }
+        }while($exists=false);
+    }else{
         $date=$faker->dateTime;
-        $exists=in_array($date,$dates);
-    }while($exists=false);
-    var_dump($date);
-    die();
+    }
+    $days=['radni','neradni'];
+    $dayind=array_random($days);
     return [
-        'date'=>$faker->date(),
-        'type'=>$faker->in_array('radni','neradni'),
+        'days'=>$date,
+        'type'=>$dayind,
         'description'=>$faker->sentence
     ];
 });

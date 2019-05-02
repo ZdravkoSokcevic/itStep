@@ -16,10 +16,12 @@ $factory->define(App\Arrival::class, function (Faker $faker) {
     }
     if(!count(Calendar::all()))
     {
-        $calendar=null;
+        $calendar=factory(App\Calendar::class)->create()->get('id');
     }else{
         $calendar=Calendar::all()->random()->id;
     }
+    $workarr=['work','not_work'];
+    $work=array_rand($workarr);
     return [
         'worker_id'=>$worker,
         'calendar_id'=>$calendar,
@@ -27,10 +29,7 @@ $factory->define(App\Arrival::class, function (Faker $faker) {
         'start_work'=>$faker->dateTime,
         'end_work'=>$faker->dateTime,
         'leave'=>$faker->dateTime,
-        'work'=>array_rand([
-            'work',
-            'not_work'
-        ]),
+        'work'=>$workarr[$work],
         'description'=>$faker->sentence
     ];
 });

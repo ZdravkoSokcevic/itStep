@@ -15,7 +15,7 @@ class CreateCalendarsTable extends Migration
     {
         Schema::create('calendars', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->date('date')->unique();
+            $table->date('days')->unique();
             $table->enum('type',[
                 'radni',
                 'neradni'
