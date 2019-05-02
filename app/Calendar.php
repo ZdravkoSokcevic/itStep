@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Status extends Model
+class Calendar extends Model
 {
+    protected $created_at=false;
     public $updated_at=false;
-    public $created_at=false;
     protected $fillable=[
         'id',
-        'available_days',
-        'overwork',
-        'holiday_available'
+        'date',
+        'type',
+        'description'
     ];
 }

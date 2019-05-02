@@ -31,6 +31,11 @@ class WorkerController extends Controller
         $_SESSION['id']=$id;
         $request->merge(['id'=>$id]);
         static::insertAuth($request);
+        $data=worker::all();
+        $request->merge(['id'=>$id]);
+        $status=new StatusController($id);
+        $status->intialize();
+        return $this->find($request);
     }
 
     public static function insertWorker(Request $request)
@@ -100,6 +105,26 @@ class WorkerController extends Controller
                 return json_encode("nije ulogovan");
                 // echo json_encode("nije ulogovan");
             }
+    }
+    public function find(Request $request)
+    {
+        $user=DB::table('workers')
+                                    ->join('auths','auths.id','=','workers.id')
+                                    ->join('statuses','statuses.id','=','statuses.id')
+                                    ->where('workers.id','=',$request->id)
+                                    ->where('auths.id','=',$request->id)
+                                    ->where('statuses.id','=',$request->id)
+                                    ->get();
+
+        // $user=DB::select(
+        //     DB::raw("select * from workers 
+        //             join auths on workers.id=auths.id
+        //             join statuses on statuses.id=workers.id
+        //             where workers.id={$request->id}")
+        // );
+        // var_dump(($user));
+        // die();
+        return response()->json($user);
     }
 
 }

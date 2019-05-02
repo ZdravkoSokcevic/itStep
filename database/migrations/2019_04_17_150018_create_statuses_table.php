@@ -17,9 +17,9 @@ class CreateStatusesTable extends Migration
             $table->storage='InnoDB';
             
             $table->bigInteger('id')->unsigned()->unique();
-            $table->integer('available_days');
-            $table->integer('overwork');
-            $table->integer('holiday_available');
+            $table->integer('available_days')->nullable();
+            $table->integer('overwork')->nullable();
+            $table->integer('holiday_available')->nullable();
         });
         Schema::table('statuses',function($table)
         {

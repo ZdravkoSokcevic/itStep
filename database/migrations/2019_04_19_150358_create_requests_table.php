@@ -15,13 +15,15 @@ class CreateRequestsTable extends Migration
     public function up()
     {
         Schema::create('requests', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->storage='InnoDB';
+            $table->bigIncrements('id')->unsigned();
             $table->timestamp('send_date')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
             $table->enum('type',[
                 'trip',
                 'day_off',
                 'allowance',
-                'overwork'
+                'overwork',
+                'refund'
             ]);
             $table->enum('decision',[
                 'null',     //Nije odluceno

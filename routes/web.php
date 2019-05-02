@@ -35,3 +35,5 @@ Route::post('worker/insert','WorkerController@store');
 
 //  Request routes
 Route::post('request/insert','RequestController@store');
+
+Route::get('worker/{id}','WorkerController@find');
