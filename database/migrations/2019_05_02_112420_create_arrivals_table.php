@@ -30,6 +30,7 @@ class CreateArrivalsTable extends Migration
         Schema::table('arrivals',function($table){
             $table->foreign('worker_id')->references('id')->on('workers');
             $table->foreign('calendar_id')->references('id')->on('calendars');
+            $table->unique(['worker_id','calendar_id']);
         });
     }
 

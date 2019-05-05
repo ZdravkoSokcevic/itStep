@@ -2,6 +2,9 @@
 use Illuminate\Queue\Console\WorkCommand;
 use App\Http\Controllers\WorkerController;
 use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Facades\View;
+use App\worker;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,3 +40,10 @@ Route::post('worker/insert','WorkerController@store');
 Route::post('request/insert','RequestController@store');
 
 Route::get('worker/{id}','WorkerController@find');
+
+Route::get('/arrival',function(){
+    $workers=worker::all();
+    return view('arrival',['workers'=>$workers]);
+});
+
+Route::post('/worker/arrival','ArrivalController@store');
