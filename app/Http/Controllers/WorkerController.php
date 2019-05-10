@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Session as IlluminateSession;
+use Symfony\Component\HttpFoundation\Response;
 
 class WorkerController extends Controller
 {
@@ -125,6 +126,61 @@ class WorkerController extends Controller
         // var_dump(($user));
         // die();
         return response()->json($user);
+    }
+
+    public function getAllManagers()
+    {
+        $managers=DB::table('workers')
+                                    ->join('auths','auths.id','=','workers.id')
+                                    ->join('statuses','statuses.id','=','statuses.id')
+                                    ->where('workers.type','=','manager')
+                                    ->get();
+        if(count($managers))
+        {
+            http_response_code(200);
+            return response()->json($managers);
+            
+        }else{
+            return false;
+        }
+    }
+    public function workers()
+    {
+        // echo 'usao';
+        $workers=DB::table('workers')
+                                    ->join('auths','auths.id','=','workers.id')
+                                    ->join('statuses','statuses.id','=','workers.id')
+                                    ->get();
+        if(count($workers))
+        {
+            return response()->json($workers);
+        }else{
+            return false;
+        }
+    }
+    public function getManager($id)
+    {
+        // var_dump($id);
+        $manager=DB::connection('mysql')
+                        ->select("
+                        select *
+                        from workers s1
+                        where s1.id=(
+                           select w2.id 
+                           from workers w1,workers w2
+                           where w1.id=$id and
+                           w1.id_manager=w2.id and
+                           w1.id<>w2.id
+                        )
+                        ");
+        var_dump($manager);
+        die();
+        if(count($manager))
+        {
+            return $manager;
+        }else{
+            return false;
+        }
     }
 
 }

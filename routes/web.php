@@ -16,6 +16,7 @@ use App\worker;
 |
 */
 
+
 Route::get('/', function () {
     return view('insert');
 });
@@ -32,14 +33,15 @@ Route::get('logout',function(){
     }
     return "Odlogovan";
 });
-
-Route::post('worker/insert','WorkerController@store');
+Route::get('/worker/all','WorkerController@workers');
+Route::post('/worker/insert','WorkerController@store');
+Route::get('/manager/mymanager/{id}','WorkerController@getManager');
 
 
 //  Request routes
 Route::post('request/insert','RequestController@store');
 
-Route::get('worker/{id}','WorkerController@find');
+Route::get('worker/get/{id}','WorkerController@find');
 
 Route::get('/arrival',function(){
     $workers=worker::all();
@@ -47,3 +49,15 @@ Route::get('/arrival',function(){
 });
 
 Route::post('/worker/arrival','ArrivalController@store');
+
+
+///////////////////////////////////////////////////////////
+//              MANAGER ROUTES                           //
+///////////////////////////////////////////////////////////
+Route::get('/manager/all','WorkerController@getAllManagers');
+
+
+
+///////////////////////////////////////////////////////////
+//              WORKER ROUTES                            //
+///////////////////////////////////////////////////////////
