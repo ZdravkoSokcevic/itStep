@@ -30,7 +30,7 @@ class WorkerTableSeeder extends Seeder
                 'first_name'=>$faker->firstName,
                 'last_name'=>$faker->lastName,
                 'id_manager'=>$manager,
-                'type'=>$array[$index]
+                'account_type'=>$array[$index]
             ]);
             $id=0;
             if(DB::getPdo()->lastInsertId())

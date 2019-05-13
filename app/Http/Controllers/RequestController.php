@@ -9,6 +9,7 @@ use App\Trip as Trip;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\RefundTableController as Refund;
 use App\worker;
+use Illuminate\Support\Facades\DB;
 
 
 // use Faker\Provider\DateTime;
@@ -99,5 +100,62 @@ class RequestController extends Controller
             http_response_code(404);
             echo json_encode("Doslo je do greske,pokusajte ponovo");
         }
+    }
+    public function getForManager($id)
+    {
+        $me=worker::find($id);
+        $workercontroller=new WorkerController($me);
+        //  workers where i am manager
+        $workers=$workercontroller->getmyWorkers($me->id);
+        // var_dump($workers);
+        // die();
+        $workers_id=[];
+        if($workers!==false)
+        {
+            for($x=0;$x<count($workers);$x++)   
+            {
+                $workers_id[]=$workers[$x]->id;
+                // var_dump($workers[$x]);
+            }
+            // var_dump($workers_id);
+            // die();
+            $reqArr=[];
+            for($x=0;$x<count($workers_id);$x++)
+            {
+            $requests=DB::connection('mysql')
+                                        ->select("
+                                            select * 
+                                            from requests
+                                            where worker_id = $workers_id[$x]
+    
+                                        ");
+            $reqArr[]=$requests;
+            }
+            // var_dump($reqArr);
+            //     die();
+            $reqData=[];
+            $extender='s';
+            foreach($reqArr as $requestsFromWorker)
+            {
+                foreach($requestsFromWorker as $request)
+                $reqData[]=DB::connection('mysql')
+                                    ->select("
+                                        select * 
+                                        from requests 
+                                        join workers 
+                                        on requests.worker_id=workers.id
+                                        join $request->type$extender
+                                        on requests.id=$request->type$extender.request_id
+                                        join statuses
+                                        on statuses.id=workers.id
+                                        
+                                    ");
+            }
+            return response()->json($reqData);
+        }else{
+            return response()->json('Not found',200);
+        }
+        
+        
     }
 }

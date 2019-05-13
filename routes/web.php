@@ -26,7 +26,7 @@ Route::post('worker/login','WorkerController@login');
 Route::get('/login',function(){
     return view('login');
 });
-Route::get('logout',function(){
+Route::get('/logout',function(){
     if(!is_null(session('id')))
     {
         session()->pull('id');
@@ -40,6 +40,7 @@ Route::get('/manager/mymanager/{id}','WorkerController@getManager');
 
 //  Request routes
 Route::post('request/insert','RequestController@store');
+Route::get('request/get/{id}','RequestController@getForManager');
 
 Route::get('worker/get/{id}','WorkerController@find');
 

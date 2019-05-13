@@ -11,7 +11,7 @@ $factory->define(worker::class, function (Faker $faker) {
         'first_name'=>$faker->firstName,
         'last_name'=>$faker->lastName,
         'id_manager'=>App\worker::all()->random()->id,
-        'type'=>array_rand([
+        'account_type'=>array_rand([
             'admin',
             'manager',
             'worker'

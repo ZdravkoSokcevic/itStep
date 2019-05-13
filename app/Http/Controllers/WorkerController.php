@@ -23,7 +23,7 @@ class WorkerController extends Controller
           $rules=array(
             'first_name'=>'required',
             'last_name'=>'required',
-            'admin'=>'in:admin,manager,worker'
+            'account_type'=>'in:admin,manager,worker'
         );
         $arr=(array)$request;
         $validator=Validator::make($arr,$rules);
@@ -173,11 +173,31 @@ class WorkerController extends Controller
                            w1.id<>w2.id
                         )
                         ");
-        var_dump($manager);
-        die();
+        // var_dump($manager);
+        // die();
         if(count($manager))
         {
             return $manager;
+        }else{
+            return false;
+        }
+    }
+    public function getMyWorkers($id)
+    {
+        $workers=DB::connection('mysql')
+                            ->select("
+                                select *
+                                from workers
+                                where id_manager=$id;
+                            ");
+        $workerArr=[];
+        foreach($workers as $worker)
+        {
+            $workerArr[]=$worker;
+        }
+        if(count($workerArr))
+        {
+            return $workerArr;
         }else{
             return false;
         }

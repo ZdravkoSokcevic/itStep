@@ -20,7 +20,7 @@ class CreateWorkersTable extends Migration
             $table->char('first_name',30);
             $table->char('last_name',30);
             $table->bigInteger('id_manager')->unsigned()->nullable();
-            $table->enum('type',[
+            $table->enum('account_type',[
                 'admin',
                 'manager',
                 'worker'
