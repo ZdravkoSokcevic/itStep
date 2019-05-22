@@ -15,7 +15,7 @@ class WorkerTableSeeder extends Seeder
     public function run()
     {
         $i=0;
-        for($i=0;$i<20;$i++)
+        for($i=0;$i<200;$i++)
         {
             if(!count(App\worker::all()))
             {

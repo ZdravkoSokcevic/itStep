@@ -1,0 +1,121 @@
+-----------------------------------------------------------------------------------------------------
+							IT		STEP					
+-----------------------------------------------------------------------------------------------------
+
+Ee ovako Paavle:
+1)	Prvo sto trebas da uradis kad dobijes ovo je da napravis bazu koja se zove ipStep
+2)	Drugo je da otvoris folder u terminalu i da pokrenes php artisan migrate
+3)	Trece je da pokrenes php artisan db:seed(tu ce se mozda javiti da pukne ali nmvze on ce da napuni
+		dosta podataka koliko tebi treba)
+4)	Cetvrto je ostalo da pokrenes php artisan serve
+
+
+Sto se ruta tice idemo prvo sa izvlacenjem iz baze:
+
+1)	vracanje svih radnika se nalazi na ruti :
+		http://localhost:8000/worker/all
+
+2)	vracanje jednog radnika se nalazi na ruti:
+		http://localhost:8000/worker/get/{id}		gdje je {id}=>id radnika kojeg povlacis
+
+3)	vracanje svih managera iz tabele:
+		http://localhost:8000/manager/all
+
+4)	vracanje onoga koji je manager radniku sa id-em {id}
+		http://localhost:8000/manager/mymanager/id 	gdje je {id}=>id radnika za kojeg trazimo manager-a
+
+5)	vracanje svih zahtjeva
+		http://localhost:8000/request/all
+
+6)	vracanje jednog zahtjeva
+		http://localhost:8000/request/{id}			id je id zahtjeva
+
+7)	vracanje svih zahtjeva za mene kao manager-a
+		http://localhost:8000/request/forManager/{id}	gdje je id id manager-a
+
+8)	pregled svih dolazaka za jednog radnika sa id-em {id}
+		http://localhost:8000/arrival/getAll/{id}   gdje je {id} id radnika za kojeg trazimo sve dolaske
+
+-----------------------------------------------------------------------------------------------------
+A sada idu rute za insert:
+-----------------------------------------------------------------------------------------------------
+
+1)	insert radnika
+		http://localhost:8000/worker/insert
+
+2)	insert zahtjeva
+		http://localhost:8000/request/insert
+
+	--------------------------------------
+		zahtjev tipa refund
+	--------------------------------------
+	saljes json koji ima strukturu
+	{
+		"type":"refund",
+		"thirdPerson":"neki id",		//=>moze biti null
+		"worker_id":"id radnika koji je poslao",
+		"decision":"null",
+		"description":"opis zahtjeva ako ga ima",
+		"attachment":"za refund moze se poslati attach",
+		"reason":"razlog za refundaciju",
+		"quantity":"koliko iznosi refundacija"	//int
+	}
+
+	---------------------------------------
+		zahtjev tipa slobodan dan
+	---------------------------------------
+	saljes json koji ima strukturu
+	{
+		"type":"day_off",
+		"thirdPerson":"neki id",		//=>moze biti null
+		"worker_id":"id radnika koji je poslao",
+		"decision":"null",
+		"description":"opis zahtjeva ako ga ima",
+		"numberDays":"broj trazenih slob dana" //int
+	}
+
+	---------------------------------------
+		zahtjev tipa prekovremeno
+	---------------------------------------
+	saljes json koji ima strukturu
+	{
+		"type":"overwork",
+		"thirdPerson":"neki id",		//=>moze biti null
+		"worker_id":"id radnika koji je poslao",
+		"decision":"null",
+		"description":"opis zahtjeva ako ga ima",
+		"number_hours":"broj sati"		//int
+	}
+	
+	---------------------------------------
+	      	zahtjev tipa sluzbeno putovanje
+	---------------------------------------
+	saljes json koji ima strukturu
+	{
+		"type":"trip",
+		"thirdPerson":"neki id",		//=>moze biti null
+		"worker_id":"id radnika koji je poslao",
+		"decision":"null",
+		"description":"opis zahtjeva ako ga ima",
+		"go_time":"datum kada se krece",	//datetime
+		"back_time":"datum kada se vraca",	//datetime
+		"country":"zamlja u koju se ide",	
+		"town":"grad u koji se ide"
+	}
+	---------------------------------------
+		zahtjev tipa allowance
+	---------------------------------------
+	saljes json koji ima strukturu
+	{
+		"type":"trip",
+		"thirdPerson":"neki id",		//=>moze biti null
+		"worker_id":"id radnika koji je poslao",
+		"decision":"null",
+		"description":"opis zahtjeva ako ga ima",
+		"price":""
+	}
+3)	insert dolaska
+		http://localhost:8000/arrival/insert
+	
+		
+

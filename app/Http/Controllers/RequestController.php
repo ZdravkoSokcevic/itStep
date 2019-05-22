@@ -10,7 +10,7 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\RefundTableController as Refund;
 use App\worker;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\App;
 
 // use Faker\Provider\DateTime;
 
@@ -23,7 +23,6 @@ class RequestController extends Controller
         // die();
 
          //VALIDATOR
-
         $validatorData=$request->validate([
             'type'=>'in:trip,overwork,refund,day_off,allowance',
             'description'=>''
@@ -41,8 +40,8 @@ class RequestController extends Controller
             case 'trip':
             {
                 $request->validate([
-                    'go_time'=>'required|time',
-                    'back_time'=>'required|time',
+                    'go_time'=>'required',
+                    'back_time'=>'required',
                     'country'=>'required',
                     'town'=>'required'
                 ]);
@@ -131,25 +130,29 @@ class RequestController extends Controller
                                         ");
             $reqArr[]=$requests;
             }
-            // var_dump($reqArr);
-            //     die();
             $reqData=[];
             $extender='s';
             foreach($reqArr as $requestsFromWorker)
             {
                 foreach($requestsFromWorker as $request)
-                $reqData[]=DB::connection('mysql')
-                                    ->select("
-                                        select * 
-                                        from requests 
-                                        join workers 
-                                        on requests.worker_id=workers.id
-                                        join $request->type$extender
-                                        on requests.id=$request->type$extender.request_id
-                                        join statuses
-                                        on statuses.id=workers.id
-                                        
-                                    ");
+                {
+                    // return response()->json($request);
+                    // die();
+                    $reqData[]=DB::connection('mysql')
+                    ->select("
+                        select * 
+                        from requests 
+                        join workers 
+                        on requests.worker_id=workers.id
+                        join $request->type$extender
+                        on requests.id=$request->type$extender.request_id
+                        join statuses
+                        on statuses.id=workers.id
+                        where requests.id=$request->id
+                        
+                    ");
+                }
+               
             }
             return response()->json($reqData);
         }else{
@@ -157,5 +160,96 @@ class RequestController extends Controller
         }
         
         
+    }
+    public function all()
+    {
+        $justRequests=DB::table('requests')
+                        ->select()
+                        ->get();
+        $allRequests=[];
+        foreach($justRequests as $request)
+        {
+            $allRequests[]=DB::table('requests')
+                                ->select()
+                                ->join('workers','workers.id','=','requests.worker_id')
+                                ->join($request->type.'s',$request->type.'s.request_id','=','requests.id')
+                                ->get();
+                                
+        }
+        // die();
+        return response()->json($allRequests);
+    }
+    public function find($id)
+    {
+        $request=AppRequest::findOrFail($id);
+        $extension='s';
+        $reqData=DB::connection('mysql')
+                        ->select("
+                            SELECT * 
+                            FROM requests
+                            JOIN $request->type$extension
+                            ON requests.id=$request->type$extension.id
+                            JOIN workers
+                            ON workers.id=requests.worker_id 
+                            JOIN statuses
+                            ON statuses.id=requests.id
+                            WHERE requests.id=$id
+                        ");
+        return response()->json($reqData,200);
+    }
+    public function approveRequest(Request $request)
+    {
+        $req=new AppRequest();
+        $oldRequest=$req->find($request->id);
+        $timeNow=Date('Y-m-d h:i:s');
+        // $timeNow=$time->getTimestamp();
+        // switch($oldRequest)
+        $success=DB::update("
+                update requests set decision=?,
+                decision_date=? 
+                where id=?
+            ",[
+            $request->decision,
+            $timeNow,
+            $oldRequest->id
+        ]);
+        $controller=new RequestController();
+        $oldData=$controller->find($oldRequest->id)->original[0];
+        return response()->json($oldData);
+        die();
+        switch($oldData->type)
+        {
+            case 'allowance':
+            {
+                var_dump('Allowance');
+                // $newValue=$oldData->;
+                // DB::update("
+                //     update status
+                //     set 
+                // ");
+            };break;
+            case 'overwork':
+            {
+                $newValue=($oldData->numberHours)%8;
+                $newDays=$number_hours->overwork+$oldData->overwork;
+                $status=Status::find($request->id);
+                $status->overwork=$newDays;
+                $status->save();
+                var_dump('Overwork');
+            };break;
+            case 'trip':
+            {
+                var_dump('trip');
+            };break;
+            case 'day_off':
+            {
+                var_dump('Day_off');
+            };break;
+            case 'refund':
+            {
+                var_dump('Refund');
+            };break;
+        }
+        return response()->json($success);
     }
 }

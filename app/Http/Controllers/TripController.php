@@ -12,10 +12,6 @@ class TripController extends Controller
 {
     public static function store(Req $request)
     {
-        $request->validate([
-            'go_time'=>'required',
-            'back_time'=>'required'
-        ]);
         // $validate=Validator::make((array)$request,[
         //     $request->go_time=>'required',
         //     $request->back_time=>'required'
@@ -28,6 +24,7 @@ class TripController extends Controller
         {
             $trip=new Trip($request->all());
             $trip->save();
+            return $trip;
         }
 
     }

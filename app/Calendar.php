@@ -14,4 +14,14 @@ class Calendar extends Model
         'type',
         'description'
     ];
+    public function existsDate($date)
+    {
+        $date=Calendar::find('days',$date);
+        if(isset($date))
+        {
+            return $date;
+        }else{
+            return null;
+        }
+    }
 }

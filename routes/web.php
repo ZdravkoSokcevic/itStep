@@ -22,7 +22,6 @@ Route::get('/', function () {
 });
 
 Route::post('worker/login','WorkerController@login');
-
 Route::get('/login',function(){
     return view('login');
 });
@@ -35,22 +34,29 @@ Route::get('/logout',function(){
 });
 Route::get('/worker/all','WorkerController@workers');
 Route::post('/worker/insert','WorkerController@store');
+Route::get('worker/get/{id}','WorkerController@find');
 Route::get('/manager/mymanager/{id}','WorkerController@getManager');
 
 
 //  Request routes
+Route::get('/request/all','RequestController@all');
 Route::post('request/insert','RequestController@store');
-Route::get('request/get/{id}','RequestController@getForManager');
+Route::get('/request/get/{id}','RequestController@find');
+Route::post('/request/setDecision','RequestController@approveRequest');
+Route::get('request/forManager/{id}','RequestController@getForManager');
 
-Route::get('worker/get/{id}','WorkerController@find');
 
 Route::get('/arrival',function(){
     $workers=worker::all();
     return view('arrival',['workers'=>$workers]);
 });
+//      Retrun all arrivals for worker with id
+Route::get('/arrival/getAll/{id}','ArrivalController@findAllForWorker');
 
-Route::post('/worker/arrival','ArrivalController@store');
+Route::post('/arrival/insert','ArrivalController@store');
 
+
+Route::get('/nonWorkingDays','CalendarController@nonWorking');
 
 ///////////////////////////////////////////////////////////
 //              MANAGER ROUTES                           //

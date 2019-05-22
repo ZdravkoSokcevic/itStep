@@ -76,6 +76,8 @@ class WorkerController extends Controller
             $request->picture='NULL';
         }else{
             $request->picture=$_POST['picture'];
+            $path=WorkerController::picture_path($request->id);
+            $request->file('picture')->move();
         }
         $request->merge(['password'=>$pass]);
         $auth=new Auth($request->all());
@@ -88,18 +90,18 @@ class WorkerController extends Controller
         $rules=array(
             'password'=>'required'
         );
-        $loggedIn=DB::table('auths')
+        $exists=DB::table('auths')
                             ->select('*')
                             ->where('username',$request->username)
                             ->orWhere('email',$request->username)
                             ->first();
         // var_dump($loggedIn);
         // die();
-        if($loggedIn &&
-            Hash::check($request->password,$loggedIn->password))
+        if($exists &&
+            Hash::check($request->password,$exists->password))
             {
-                session(['id'=>$loggedIn->id]);
-                return json_encode($loggedIn);
+                session(['id'=>$exists->id]);
+                return json_encode($exists);
 
                 // var_dump($id);
             }else{
@@ -201,6 +203,13 @@ class WorkerController extends Controller
         }else{
             return false;
         }
+    }
+
+    public static function picture_path($extender=null)
+    {
+        $defPath='/app/public/profile_pictures';
+        $defPath.=$extender;
+        return $defPath;
     }
 
 }
