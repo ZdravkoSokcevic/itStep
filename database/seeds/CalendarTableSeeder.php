@@ -14,6 +14,6 @@ class CalendarTableSeeder extends Seeder
         //Ne radimo ovdje seeder zato sto treba da se 
         //preko arrival upise zapis ovdje
         
-        factory(App\Calendar::class,20)->create();
+        factory(App\Calendar::class,10)->create();
     }
 }

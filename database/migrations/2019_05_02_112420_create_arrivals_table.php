@@ -17,15 +17,15 @@ class CreateArrivalsTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->bigInteger('worker_id')->unsigned();
             $table->bigInteger('calendar_id')->unsigned();
-            $table->dateTime('arrival');
-            $table->dateTime('start_work');
-            $table->dateTime('end_work');
-            $table->dateTime('leave');
+            $table->dateTime('arrival')->nullable();
+            $table->dateTime('start_work')->nullable();
+            $table->dateTime('end_work')->nullable();
+            $table->dateTime('leave')->nullable();
             $table->enum('work',[
                 'work',
                 'not_work'
             ]);
-            $table->string('description');
+            $table->string('description')->nullable();
         });
         Schema::table('arrivals',function($table){
             $table->foreign('worker_id')->references('id')->on('workers');

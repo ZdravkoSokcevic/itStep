@@ -8,8 +8,14 @@ use Illuminate\Support\Facades\DB;
 
 class Arrival extends Model
 {
-    public $created_at=false;
-    public $updated_at=false;
+    const CREATED_AT = NULL;
+
+    /**
+     * The name of the "updated at" column.
+     *
+     * @var string
+     */
+    const UPDATED_AT = NULL;
     protected $fillable=[
         'id',
         'worker_id',
@@ -24,9 +30,12 @@ class Arrival extends Model
 
     public static function workerExists($calendarId,$workerId)
     {
+        // var_dump($workerId);
+        // die();
         $exists=DB::table('arrivals')
-                        ->where('calendar_id',$calendarId)
-                        ->where('worker_id',$workerId)
+                        ->select()
+                        ->where('calendar_id','=',$calendarId)
+                        ->where('worker_id','=',$workerId)
                         ->get();
         // var_dump($workerId,$calendarId);
         // var_dump($exists);
