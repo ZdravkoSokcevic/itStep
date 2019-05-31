@@ -39,9 +39,9 @@ class ArrivalController extends Controller
                 'description'=>''
             ]);
             $calendar=DB::table('calendars')
-                            ->select('*')
-                            ->where('days',$days)
-                            ->get();
+                        ->select('*')
+                        ->where('days',$days)
+                        ->get();
         }else{
             $calendar[0]->id=$calendar[0]->id;
         }
@@ -67,10 +67,10 @@ class ArrivalController extends Controller
                     ->get();
         }else{
             $exArrival=DB::table('arrivals')
-                        ->select('*')
-                        ->where('worker_id','=',$request->worker_id)
-                        ->where('calendar_id','=',$calendar[0]->id)
-                        ->get();
+                            ->select('*')
+                            ->where('worker_id','=',$request->worker_id)
+                            ->where('calendar_id','=',$calendar[0]->id)
+                            ->get();
 
 
             $request->merge([
@@ -133,7 +133,7 @@ class ArrivalController extends Controller
                         ->where('worker_id','=',$request->worker_id)
                         ->get()
                         ->first();
-    var_dump($newArrival);
+    //var_dump($newArrival);
     $newArrival->update($updData);
     return $newArrival;
     }

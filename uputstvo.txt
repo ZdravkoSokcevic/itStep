@@ -116,6 +116,19 @@ A sada idu rute za insert:
 	}
 3)	insert dolaska
 		http://localhost:8000/arrival/insert
-	
-		
+
+	---------------------------------------
+		za dolaske saljes json objekat
+	---------------------------------------
+	Koji ima strukturu sledecu:
+
+	{
+		"arrival": "datetime dolaska",
+		"start_work": "datetime pocetka rada",
+		"end_work": " -||- zavrsetka posla",
+		"leave": "Kada je otisao(datetime)",
+		"work": "work|notwork",
+		"desc": "Opis radnog dana",
+		"worker_id": "id_radnika(int)"
+	}	
 
