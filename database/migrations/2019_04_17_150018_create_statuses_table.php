@@ -23,7 +23,9 @@ class CreateStatusesTable extends Migration
         });
         Schema::table('statuses',function($table)
         {
-            $table->foreign('id')->references('id')->on('workers');
+            $table->foreign('id')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

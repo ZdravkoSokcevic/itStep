@@ -19,7 +19,9 @@ class CreateDayOffsTable extends Migration
             $table->integer('numberDays');
         });
         Schema::table('day_offs',function($table){
-            $table->foreign('request_id')->references('id')->on('requests');
+            $table->foreign('request_id')->references('id')->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

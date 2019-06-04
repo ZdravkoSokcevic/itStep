@@ -28,8 +28,12 @@ class CreateArrivalsTable extends Migration
             $table->string('description')->nullable();
         });
         Schema::table('arrivals',function($table){
-            $table->foreign('worker_id')->references('id')->on('workers');
-            $table->foreign('calendar_id')->references('id')->on('calendars');
+            $table->foreign('worker_id')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->foreign('calendar_id')->references('id')->on('calendars')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             $table->unique(['worker_id','calendar_id']);
         });
     }

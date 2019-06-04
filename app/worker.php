@@ -14,4 +14,13 @@ class worker extends Model
         'id_manager',
         'account_type'
     ];
+
+    // public static function findOrFail($id)
+    // {
+    //     if($success=static::findOrFail($id)){
+    //         return $success;
+    //     }else{
+    //         return false;
+    //     }
+    // }
 }

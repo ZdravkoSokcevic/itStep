@@ -19,7 +19,9 @@ class CreateAllowancesTable extends Migration
             $table->integer('price');
         });
         Schema::table('allowances',function($table){
-            $table->foreign('request_id')->references('id')->on('requests');
+            $table->foreign('request_id')->references('id')->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

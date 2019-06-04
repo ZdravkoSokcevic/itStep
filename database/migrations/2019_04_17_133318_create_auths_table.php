@@ -23,7 +23,9 @@ class CreateAuthsTable extends Migration
         });
         Schema::table('auths',function($table)
         {
-            $table->foreign('id')->references('id')->on('workers');
+            $table->foreign('id')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

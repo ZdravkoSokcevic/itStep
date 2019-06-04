@@ -36,6 +36,7 @@ Route::get('/worker/all','WorkerController@workers');
 Route::post('/worker/insert','WorkerController@store');
 Route::get('worker/get/{id}','WorkerController@find');
 Route::get('/manager/mymanager/{id}','WorkerController@getManager');
+Route::delete('worker/delete/{id}','WorkerController@delete');
 
 
 //  Request routes
@@ -62,7 +63,6 @@ Route::get('/nonWorkingDays','CalendarController@nonWorking');
 //              MANAGER ROUTES                           //
 ///////////////////////////////////////////////////////////
 Route::get('/manager/all','WorkerController@getAllManagers');
-
 
 
 ///////////////////////////////////////////////////////////

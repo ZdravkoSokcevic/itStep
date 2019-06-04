@@ -31,7 +31,9 @@ class CreateWorkersTable extends Migration
         Schema::enableForeignKeyConstraints();
         Schema::table('workers',function($table)
         {
-            $table->foreign('id_manager')->references('id')->on('workers');
+            $table->foreign('id_manager')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
         
     }

@@ -36,7 +36,9 @@ class CreateRequestsTable extends Migration
             $table->text('description');
         });
         Schema::table('requests',function($table){
-            $table->foreign('worker_id')->references('id')->on('workers');
+            $table->foreign('worker_id')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

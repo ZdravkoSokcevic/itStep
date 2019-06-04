@@ -24,8 +24,12 @@ class CreateRefundsTable extends Migration
             $table->bigInteger('quantity');
         });
         Schema::table('refunds',function($table){
-            $table->foreign('request_id')->references('id')->on('requests');
-            $table->foreign('worker_id')->references('id')->on('workers');
+            $table->foreign('request_id')->references('id')->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            $table->foreign('worker_id')->references('id')->on('workers')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 

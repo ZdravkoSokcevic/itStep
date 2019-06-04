@@ -14,7 +14,6 @@ use Validator;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Session as IlluminateSession;
 use Symfony\Component\HttpFoundation\Response;
-
 class WorkerController extends Controller
 {
     public function store(Request $request)
@@ -77,7 +76,7 @@ class WorkerController extends Controller
         }else{
             $request->picture=$_POST['picture'];
             $path=WorkerController::picture_path($request->id);
-            $request->file('picture')->move();
+            $request->file('picture')->move($path);
         }
         $request->merge(['password'=>$pass]);
         $auth=new Auth($request->all());
@@ -210,6 +209,29 @@ class WorkerController extends Controller
         $defPath='/app/public/profile_pictures';
         $defPath.=$extender;
         return $defPath;
+    }
+
+    public function delete($id)
+    {
+        $worker=worker::findOrFail($id);
+        echo json_encode($worker);
+        die();
+        if(count((array)$worker)>1)
+        {
+            $success=$worker->delete();
+            return response()->json("Radnik uspjesno obrisan");
+            die();
+        }else{
+            return response()->json("Worker not found");
+        }
+        die();
+        if($success)
+        {
+            return response()->json("Uspjesno obrisan");
+        }else{
+            return response()->json($worker);
+        }
+        
     }
 
 }

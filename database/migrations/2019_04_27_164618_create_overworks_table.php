@@ -20,7 +20,9 @@ class CreateOverworksTable extends Migration
             $table->string('description',255);
         });
         Schema::table('overworks',function($table){
-            $table->foreign('request_id')->references('id')->on('requests');
+            $table->foreign('request_id')->references('id')->on('requests')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
         });
     }
 
