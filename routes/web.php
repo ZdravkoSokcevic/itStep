@@ -33,10 +33,12 @@ Route::get('/logout',function(){
     return "Odlogovan";
 });
 Route::get('/worker/all','WorkerController@workers');
+Route::post('/worker/update/{id}','WorkerController@updWorker');
 Route::post('/worker/insert','WorkerController@store');
 Route::get('worker/get/{id}','WorkerController@find');
 Route::get('/manager/mymanager/{id}','WorkerController@getManager');
 Route::delete('worker/delete/{id}','WorkerController@delete');
+Route::post('worker/chpsswd','WorkerController@chPasswd');
 
 
 //  Request routes

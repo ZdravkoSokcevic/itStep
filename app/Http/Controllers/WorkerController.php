@@ -9,11 +9,15 @@ use App\worker;
 use App\Auth;
 use App\Status;
 use Illuminate\Support\Facades\DB;
-
-use Validator;
+// use Illuminate\Validation\Validator;
+use App\Http\Controllers\Controller;
+use \Validator;
+// use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Session as IlluminateSession;
 use Symfony\Component\HttpFoundation\Response;
+use PHPUnit\Runner\Exception;
+
 class WorkerController extends Controller
 {
     public function store(Request $request)
@@ -117,15 +121,6 @@ class WorkerController extends Controller
                                     ->where('auths.id','=',$request->id)
                                     ->where('statuses.id','=',$request->id)
                                     ->get();
-
-        // $user=DB::select(
-        //     DB::raw("select * from workers 
-        //             join auths on workers.id=auths.id
-        //             join statuses on statuses.id=workers.id
-        //             where workers.id={$request->id}")
-        // );
-        // var_dump(($user));
-        // die();
         return response()->json($user);
     }
 
@@ -133,9 +128,14 @@ class WorkerController extends Controller
     {
         $managers=DB::table('workers')
                                     ->join('auths','auths.id','=','workers.id')
-                                    ->join('statuses','statuses.id','=','statuses.id')
-                                    ->where('workers.type','=','manager')
+                                    ->join('statuses','statuses.id','=','workers.id')
+                                    ->where('workers.account_type','=','manager')
                                     ->get();
+        // foreach($managers as $manager)
+        // {
+        //     $manager->id=$manager->sid;
+        //     unset($manager->sid);
+        // }
         if(count($managers))
         {
             http_response_code(200);
@@ -149,12 +149,24 @@ class WorkerController extends Controller
     {
         // echo 'usao';
         $workers=DB::table('workers')
+                                    ->select([
+                                        'workers.id',
+                                        'workers.first_name',
+                                        'workers.last_name',
+                                        'workers.id_manager',
+                                        'auths.username',
+                                        'auths.picture',
+                                        'auths.email',
+                                        'statuses.available_days',
+                                        'statuses.overwork',
+                                        'statuses.holiday_available'
+                                    ])
                                     ->join('auths','auths.id','=','workers.id')
                                     ->join('statuses','statuses.id','=','workers.id')
                                     ->get();
         if(count($workers))
         {
-            return response()->json($workers);
+            return response()->json(collect($workers)->except('password'));
         }else{
             return false;
         }
@@ -234,4 +246,70 @@ class WorkerController extends Controller
         
     }
 
+    public function updWorker($id,Request $request)
+    {
+        $req=new worker();
+        $succ=$req->validateInput($request,$req->rules);
+        //  If validation approves and id's match 
+        if($id==$request->id && $succ)
+        {
+            $workerColumns=$request->only([
+                'first_name',
+                'last_name',
+                'id_manager',
+                'account_type'
+            ]);
+            $statusColumns=$request->only([
+                'available_days',
+                'overwork',
+                'holiday_available'
+            ]);
+            $authColumns=$request->only([
+                'username',
+                'picture',
+                'email'
+            ]);
+            
+             
+            $wUpdate=DB::table('workers')
+                            ->where('id','=',$request->id)
+                            ->update($workerColumns);
+            $sUpdate=DB::table('statuses')
+                                ->where('id','=',$id)
+                                ->update($statusColumns);
+            $aUpdate=DB::table('auths')
+                            ->where('id','=',$request->id)
+                            ->update($authColumns);
+           
+            return response()->json(['message'=>'Uspesno update-ovan'],200);
+        }else{
+            return response()->json(['message'=>'Validation not approved'],400);
+        }
+       
+    }
+
+    public function chPasswd(Request $request)
+    {
+        $worker=DB::table('auths')
+                    ->select('*')
+                    ->where('username',$request->user)
+                    ->orWhere('email',$request->user)
+                    ->first();
+        // return response()->json($worker->password);
+        // die();
+        if(Hash::check($request->pass,$worker->password))
+        {
+            $updatePass=new Auth();
+            $worker->password=Hash::make($request->newPsswd);
+            $upd=DB::table('auths')
+                        ->where('id','=',$worker->id)
+                        ->update((array)$worker);
+            return response()->json($upd,200);
+        }
+        return response()->json(['message'=>'Invalid creditials'],404);
+    }
+
 }
+
+// $2y$12$alOTvb2iW1VcRM2oF6HVYuKpnXT7lKhcvCXrO3Dh8ZKiHNWtgqR/a
+// $2y$12$alOTvb2iW1VcRM2oF6HVYuKpnXT7lKhcvCXrO3Dh8ZKiHNWtgqR/a

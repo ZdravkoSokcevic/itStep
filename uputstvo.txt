@@ -132,3 +132,14 @@ A sada idu rute za insert:
 		"worker_id": "id_radnika(int)"
 	}	
 
+
+4) promjena sifre
+	URL: localhost:8000/worker/chpsswd
+	method:POST
+	Saljes json objekat koji ima sledecu str:
+
+{
+	"user":"username or email",
+	"pass":"stari pass",
+	"newPsswd":"novi pass"
+}

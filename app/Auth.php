@@ -8,6 +8,8 @@ class Auth extends Model
 {
     public $created_at=false;
     public $updated_at=false;
+    const CREATED_AT=false;
+    const UPDATED_AT=false;
     protected $fillable=[
         'id',
         'username',
@@ -15,6 +17,9 @@ class Auth extends Model
         'picture',
         'email'
     ];
+    // protected $hidden=[
+    //     'password'
+    // ];
     protected $guarded = [
         'first_name',
         'last_name',
