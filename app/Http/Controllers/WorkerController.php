@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Illuminate\Support\Facades\Session as IlluminateSession;
 use Symfony\Component\HttpFoundation\Response;
 use PHPUnit\Runner\Exception;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class WorkerController extends Controller
 {
@@ -88,7 +90,8 @@ class WorkerController extends Controller
     }
     public function login(Request $request)
     {
-        // var_dump($request);
+        // var_dump($request->username);
+        // var_dump($request->password);
         // die();
         $rules=array(
             'password'=>'required'
@@ -98,17 +101,24 @@ class WorkerController extends Controller
                             ->where('username',$request->username)
                             ->orWhere('email',$request->username)
                             ->first();
-        // var_dump($loggedIn);
+        // var_dump($exists);
         // die();
         if($exists &&
             Hash::check($request->password,$exists->password))
             {
                 session(['id'=>$exists->id]);
-                return json_encode($exists);
+                $sess=session()->get('id');
+                return response()->json([
+                    'message'=>'Uspesno ulogovan',
+                    'user'=>$exists
+                ]);
 
                 // var_dump($id);
             }else{
-                return json_encode("nije ulogovan");
+                // $ses=session('id');
+                // return response()->json(session());
+                // die();
+                return response()->json(['message'=>'nije ulogovan']);
                 // echo json_encode("nije ulogovan");
             }
     }
@@ -131,18 +141,11 @@ class WorkerController extends Controller
                                     ->join('statuses','statuses.id','=','workers.id')
                                     ->where('workers.account_type','=','manager')
                                     ->get();
-        // foreach($managers as $manager)
-        // {
-        //     $manager->id=$manager->sid;
-        //     unset($manager->sid);
-        // }
         if(count($managers))
         {
-            http_response_code(200);
-            return response()->json($managers);
-            
+            return response()->json($managers,200);
         }else{
-            return false;
+            return response()->json(['message'=>'no managers found'],200);
         }
     }
     public function workers()

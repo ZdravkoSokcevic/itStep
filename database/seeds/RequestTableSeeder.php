@@ -11,7 +11,7 @@ class RequestTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i=0;$i<50;$i++)
+        for($i=0;$i<550;$i++)
         {
             $obj=factory(App\Request::class,1)->create();
             // var_dump($obj->type);

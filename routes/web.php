@@ -16,9 +16,27 @@ use App\worker;
 |
 */
 
+header("Access-Control-Allow-Origin: *");
+// header("Content-Type: application/json; charset=UTF-8");
+// header("Access-Control-Allow-Methods: POST");
+// header("Access-Control-Max-Age: 3600");
+// header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+// header('Content-Type: application/x-www-form-urlencoded');
+
+
 
 Route::get('/', function () {
     return view('insert');
+});
+// Route::get('/refund',function(){
+//     return view('refund');
+// });
+Route::post('/hash',function(){
+    $data=json_decode(file_get_contents("php://input"));
+   
+    $password=$data->password;
+    $hash=Illuminate\Support\Facades\Hash::make($password);
+    return response()->json($hash);
 });
 
 Route::post('worker/login','WorkerController@login');

@@ -11,6 +11,9 @@ use App\Http\Controllers\RefundTableController as Refund;
 use App\worker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Routing\RequestContext;
+use Illuminate\Support\Facades\File;
 
 // use Faker\Provider\DateTime;
 
@@ -18,6 +21,7 @@ class RequestController extends Controller
 {
     public function store(Request $request)
     {
+        header('Content-Type: text/plain; charset=utf-8');
 
         // var_dump($request);
         // die();
@@ -28,13 +32,35 @@ class RequestController extends Controller
             'description'=>''
         ]);
         $workers=worker::where('id',$request->id);
-        
+        // return response()->json($request->only([
+        //     'type',
+        //     'thirdPerson',
+        //     'worker_id',
+        //     'description',
+        //     'attachment',
+        //     'reason',
+        //     'quantity',
+        //     'description'
+        // ]));
+        // die();
         $request->send_date=time('Y-m-d H:I:m');
         $request->decision='NULL';
         $request->decision_date='NULL';
         $reqData=new AppRequest($request->all());
         $req=$reqData->save();
+        $filePath='';
+        if(isset($_FILES['attachment']))
+        {
+            $file=$request->file('attachment');
+            $filePath=RequestController::storeFile($reqData,$file);
+            // return response()->json($filePath);
+        }else{
+            $filePath=null;
+        }
+        
 
+        // return response()->json($request->type);
+        // die();
         switch($request->type)
         {
             case 'trip':
@@ -81,16 +107,22 @@ class RequestController extends Controller
             case 'refund':
             {
                 //toDo
+                var_dump("usao");
+                return response()->json($filePath);
+                die();
                 $request->merge([
+                    'attachment'=>$filePath,
                     'request_id'=>$reqData->id,
                     'worker_id'=>$request->worker_id]);
-                $data=Refund::store($request);
+                $data=\App\Http\Controllers\RefundTableController::stor($request);
             };break;
+            default:
+            {
+                return response()->json("Usao u default");
+            }
         }
-
-        // var_dump($data);
-        // die();
-
+        return response()->json("izasao iz switch");
+        die();
         if(isset($data))
         {
             echo json_encode("Zahtjev uspjesno poslat!");
@@ -100,6 +132,19 @@ class RequestController extends Controller
             echo json_encode("Doslo je do greske,pokusajte ponovo");
         }
     }
+
+    /*
+    *       Storing an attachment sent with refund request
+    */
+    public static function storeFile($r,$file)
+    {
+        $fileName=$file->getClientOriginalName();
+        $to_return="attachments/$fileName";
+        $file->name=$fileName;
+        Storage::disk('local')->putFileAs('attachments',$file,$fileName);
+        return $to_return;
+    }
+
     public function getForManager($id)
     {
         $me=worker::find($id);
